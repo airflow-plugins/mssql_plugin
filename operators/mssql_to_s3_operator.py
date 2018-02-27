@@ -13,7 +13,7 @@ from mssql_plugin.hooks.astro_mssql_hook import AstroMsSqlHook
 
 class MsSQLToS3Operator(BaseOperator):
     """
-    MsSQL to Spreadsheet Operator
+    MsSQL to S3 Operator
 
     NOTE: Because this operator accesses a single database via concurrent
     connections, it is advised that a connection pool be used to control
