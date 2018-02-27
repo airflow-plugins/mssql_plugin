@@ -1,12 +1,14 @@
-from airflow.models import BaseOperator
-from airflow.hooks.S3_hook import S3Hook
-from airflow.hooks.base_hook import BaseHook
-from mssql_plugin.hooks.astro_mssql_hook import AstroMsSqlHook
-from airflow.utils.decorators import apply_defaults
 import json
 import os
 import smart_open
 import logging
+
+from airflow.models import BaseOperator
+from airflow.hooks.S3_hook import S3Hook
+from airflow.hooks.base_hook import BaseHook
+from airflow.utils.decorators import apply_defaults
+
+from mssql_plugin.hooks.astro_mssql_hook import AstroMsSqlHook
 
 
 class MsSQLToS3Operator(BaseOperator):
