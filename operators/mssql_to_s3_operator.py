@@ -23,8 +23,8 @@ class MsSQLToS3Operator(BaseOperator):
     :type mssql_conn_id:            string
     :param mssql_table:             The input MsSQL table to pull data from.
     :type mssql_table:              string
-    :param s3_conn_id:              The destination s3 connection id.
-    :type s3_conn_id:               string
+    :param aws_conn_id:             The destination s3 connection id.
+    :type aws_conn_id:              string
     :param s3_bucket:               The destination s3 bucket.
     :type s3_bucket:                string
     :param s3_key:                  The destination s3 key.
@@ -62,7 +62,7 @@ class MsSQLToS3Operator(BaseOperator):
     def __init__(self,
                  mssql_conn_id,
                  mssql_table,
-                 s3_conn_id,
+                 aws_conn_id,
                  s3_bucket,
                  s3_key,
                  primary_key,
@@ -76,7 +76,7 @@ class MsSQLToS3Operator(BaseOperator):
         super().__init__(*args, **kwargs)
         self.mssql_conn_id = mssql_conn_id
         self.mssql_table = mssql_table
-        self.s3_conn_id = s3_conn_id
+        self.aws_conn_id = aws_conn_id
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
         self.batchsize = batchsize
@@ -205,7 +205,7 @@ class MsSQLToS3Operator(BaseOperator):
         count = hook.get_pandas_df(count_sql_max)['c'][0]
         min_count = hook.get_pandas_df(count_sql_min)['c'][0]
 
-        s3_conn = BaseHook('S3').get_connection(self.s3_conn_id)
+        s3_conn = BaseHook('S3').get_connection(self.aws_conn_id)
         s3_creds = s3_conn.extra_dejson
 
         s3_key = '{}/{}'.format(
@@ -267,7 +267,7 @@ class MsSQLToS3Operator(BaseOperator):
                 fout.write(results)
 
     def s3_upload(self, results, schema=False):
-        s3 = S3Hook(s3_conn_id=self.s3_conn_id)
+        s3 = S3Hook(aws_conn_id=self.aws_conn_id)
         key = '{0}'.format(self.s3_key)
 
         file_name = os.path.splitext(key)[0]
@@ -285,5 +285,4 @@ class MsSQLToS3Operator(BaseOperator):
             replace=True
         )
 
-        s3.connection.close()
         logging.info('File uploaded to s3')
